@@ -41,7 +41,7 @@ public class DiskLogStrategy implements LogStrategy {
 
     @NonNull private final String folder;
     private final int maxFileSize;
-    SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHH");
 
     WriteHandler(@NonNull Looper looper, @NonNull String folder, int maxFileSize) {
       super(checkNotNull(looper));
