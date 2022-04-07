@@ -40,12 +40,14 @@ public class DiskLogStrategy implements LogStrategy {
   static class WriteHandler extends Handler {
 
     @NonNull private final String folder;
+    private final String fileName;
     private final int maxFileSize;
     SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHH");
 
-    WriteHandler(@NonNull Looper looper, @NonNull String folder, int maxFileSize) {
+    WriteHandler(@NonNull Looper looper, @NonNull String folder, String fileName, int maxFileSize) {
       super(checkNotNull(looper));
       this.folder = checkNotNull(folder);
+      this.fileName = fileName;
       this.maxFileSize = maxFileSize;
     }
 
@@ -54,7 +56,7 @@ public class DiskLogStrategy implements LogStrategy {
       String content = (String) msg.obj;
 
       FileWriter fileWriter = null;
-      File logFile = getLogFile(folder, "logs");
+      File logFile = getLogFile(folder, fileName);
 
       try {
         fileWriter = new FileWriter(logFile, true);

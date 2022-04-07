@@ -94,7 +94,8 @@ public class CsvFormatStrategy implements FormatStrategy {
     SimpleDateFormat dateFormat;
     LogStrategy logStrategy;
     String tag = "PRETTY_LOGGER";
-    String folderName = "logger";
+    String folderName = "YSYLog";
+    String fileName = "logs";
 
     private Builder() {
     }
@@ -124,6 +125,11 @@ public class CsvFormatStrategy implements FormatStrategy {
       return this;
     }
 
+    @NonNull public Builder fileName(@Nullable String fileName) {
+      this.fileName = fileName;
+      return this;
+    }
+
     @NonNull public CsvFormatStrategy build() {
       if (date == null) {
         date = new Date();
@@ -137,7 +143,7 @@ public class CsvFormatStrategy implements FormatStrategy {
 
         HandlerThread ht = new HandlerThread("AndroidFileLogger." + folder);
         ht.start();
-        Handler handler = new DiskLogStrategy.WriteHandler(ht.getLooper(), folder, MAX_BYTES);
+        Handler handler = new DiskLogStrategy.WriteHandler(ht.getLooper(), folder,fileName, MAX_BYTES);
         logStrategy = new DiskLogStrategy(handler);
       }
       return new CsvFormatStrategy(this);
