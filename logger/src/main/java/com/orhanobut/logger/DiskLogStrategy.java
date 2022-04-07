@@ -1,26 +1,30 @@
 package com.orhanobut.logger;
 
+import static com.orhanobut.logger.Utils.checkNotNull;
+
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
-import static com.orhanobut.logger.Utils.checkNotNull;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Abstract class that takes care of background threading the file log operation on Android.
  * implementing classes are free to directly perform I/O operations there.
- *
+ * <p>
  * Writes all logs to the disk with CSV format.
  */
 public class DiskLogStrategy implements LogStrategy {
 
   @NonNull private final Handler handler;
+
 
   public DiskLogStrategy(@NonNull Handler handler) {
     this.handler = checkNotNull(handler);
@@ -37,6 +41,7 @@ public class DiskLogStrategy implements LogStrategy {
 
     @NonNull private final String folder;
     private final int maxFileSize;
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
 
     WriteHandler(@NonNull Looper looper, @NonNull String folder, int maxFileSize) {
       super(checkNotNull(looper));
@@ -96,11 +101,13 @@ public class DiskLogStrategy implements LogStrategy {
       File newFile;
       File existingFile = null;
 
-      newFile = new File(folder, String.format("%s_%s.csv", fileName, newFileCount));
+      String dateString = formatter.format(new Date());
+
+      newFile = new File(folder, String.format("%s_%s_%s.csv", fileName, dateString, newFileCount));
       while (newFile.exists()) {
         existingFile = newFile;
         newFileCount++;
-        newFile = new File(folder, String.format("%s_%s.csv", fileName, newFileCount));
+        newFile = new File(folder, String.format("%s_%s_%s.csv", fileName, dateString, newFileCount));
       }
 
       if (existingFile != null) {
